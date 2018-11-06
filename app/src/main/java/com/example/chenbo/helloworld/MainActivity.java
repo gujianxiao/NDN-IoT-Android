@@ -1,5 +1,8 @@
 package com.example.chenbo.helloworld;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,7 +13,9 @@ import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,8 +25,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
@@ -46,11 +53,18 @@ public class MainActivity extends AppCompatActivity
         }
     };
     public class UIUpdateTask extends AsyncTask {
-        ImageView devicePic=(ImageView) findViewById(R.id.board);
         ImageView phonePic=(ImageView) findViewById(R.id.nexus);
         EditText phoneText=(EditText) findViewById(R.id.phoneInfo);
+
+        ImageView devicePic=(ImageView) findViewById(R.id.board);
         EditText deviceText=(EditText) findViewById(R.id.boardInfo);
-        ImageView arrow=(ImageView) findViewById(R.id.arrow_right);
+
+        ImageView arrow=(ImageView) findViewById(R.id.arrow_vertical);
+
+        ImageView devicePic2=(ImageView) findViewById(R.id.board2);
+        EditText deviceTex2=(EditText) findViewById(R.id.boardInfo2);
+
+        ImageView arrow2=(ImageView) findViewById(R.id.arrow_vertical2);
         @Override
         protected Object doInBackground(Object[] objects) {
             Log.d(TAG, "doInBackground: UIUpdateTask");
@@ -73,6 +87,7 @@ public class MainActivity extends AppCompatActivity
 
         protected void onPreExecute(){
             Log.d(TAG, "onPreExecute: UIUpdateTask");
+            //set visible of pic;
             devicePic.setVisibility(View.VISIBLE);
             phonePic.setVisibility(View.VISIBLE);
             deviceText.setVisibility(View.VISIBLE);
@@ -86,11 +101,115 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ImageView devicePic=(ImageView) findViewById(R.id.board);
         ImageView phonePic=(ImageView) findViewById(R.id.nexus);
         EditText phoneText=(EditText) findViewById(R.id.phoneInfo);
+
+        ImageView devicePic=(ImageView) findViewById(R.id.board);
         EditText deviceText=(EditText) findViewById(R.id.boardInfo);
-        ImageView arrow=(ImageView) findViewById(R.id.arrow_right);
+
+        ImageView arrow=(ImageView) findViewById(R.id.arrow_vertical);
+
+        ImageView devicePic2=(ImageView) findViewById(R.id.board2);
+        EditText deviceTex2=(EditText) findViewById(R.id.boardInfo2);
+
+        ImageView arrow2=(ImageView) findViewById(R.id.arrow_vertical2);
+
+        Button optionButton=(Button)findViewById(R.id.option_button);
+
+        Button switchButton1=(Button)findViewById(R.id.switch1);
+
+        switchButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //change the title and turn on the device here;
+                Toast.makeText(MainActivity.this,"Turn on the device",Toast.LENGTH_SHORT);
+            }
+        });
+
+        Button switchButton2=(Button)findViewById(R.id.switch2);
+
+        switchButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //change the title and turn on the device here;
+                Toast.makeText(MainActivity.this,"Turn on the device",Toast.LENGTH_SHORT);
+            }
+        });
+
+
+        optionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //创建弹出式菜单对象（最低版本11）
+                PopupMenu popup = new PopupMenu(MainActivity.this, v);//第二个参数是绑定的那个view
+                //获取菜单填充器
+                MenuInflater inflater = popup.getMenuInflater();
+                //填充菜单
+                inflater.inflate(R.menu.controller_option, popup.getMenu());
+                //绑定菜单项的点击事件
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.ping_b1:
+                                AlertDialog.Builder pingDialog=new AlertDialog.Builder(MainActivity.this);
+                                pingDialog.setTitle("Ping/Bootstrap B_1");
+                                pingDialog.setMessage("Ping/Bootstrap the device?");
+                                pingDialog.setCancelable(false);
+                                pingDialog.setPositiveButton("Bootstrap", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(MainActivity.this, "Start to bootstrap B_1", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                pingDialog.setNegativeButton("Ping", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(MainActivity.this, "Start to bootstrap B_1", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                break;
+                            case R.id.ping_b2:
+                                AlertDialog.Builder pingDialog2=new AlertDialog.Builder(MainActivity.this);
+                                pingDialog2.setTitle("Ping/Bootstrap B_2");
+                                pingDialog2.setMessage("Ping/Bootstrap the device?");
+                                pingDialog2.setCancelable(false);
+                                pingDialog2.setPositiveButton("Bootstrap", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(MainActivity.this, "Start to bootstrap B_2", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                pingDialog2.setNegativeButton("Ping", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(MainActivity.this, "Start to bootstrap B_2", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                break;
+                            case R.id.system_info:
+                                Toast.makeText(MainActivity.this, "Three nodes", Toast.LENGTH_SHORT).show();
+                                break;
+                            default:
+                                break;
+                        }
+                        return false;
+                    }
+                });
+                //显示(这一行代码不要忘记了)
+                popup.show();
+            }
+        });
+
+
+
+
+        float devicePicLocationY=devicePic.getTranslationY();
+
+
+
+
+        DisplayMetrics dm = getResources().getDisplayMetrics();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -106,6 +225,36 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                         //start to bootstrap the device here
                         Toast.makeText(MainActivity.this,"Start to bootstrap the device",Toast.LENGTH_LONG).show();
+                        ObjectAnimator animator = ObjectAnimator.ofFloat(arrow, "translationY",0,devicePicLocationY);
+
+// ofFloat()作用有两个
+// 1. 创建动画实例
+// 2. 参数设置：参数说明如下
+// Object object：需要操作的对象
+// String property：需要操作的对象的属性
+// float ....values：动画初始值 & 结束值（不固定长度）
+// 若是两个参数a,b，则动画效果则是从属性的a值到b值
+// 若是三个参数a,b,c，则则动画效果则是从属性的a值到b值再到c值
+// 以此类推
+// 至于如何从初始值 过渡到 结束值，同样是由估值器决定，此处ObjectAnimator.ofFloat（）是有系统内置的浮点型估值器FloatEvaluator，同ValueAnimator讲解
+
+                        animator.setDuration(500);
+                        // 设置动画运行的时长
+
+                        animator.setStartDelay(500);
+                        // 设置动画延迟播放时间
+
+                        animator.setRepeatCount(2);
+                        // 设置动画重复播放次数 = 重放次数+1
+                        // 动画播放次数 = infinite时,动画无限重复
+
+                        animator.setRepeatMode(ValueAnimator.RESTART);
+                        // 设置重复播放动画模式
+                        // ValueAnimator.RESTART(默认):正序重放
+                        // ValueAnimator.REVERSE:倒序回放
+
+                        animator.start();
+// 启动动画
                     }
                 });
                 deviceDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -185,7 +334,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             Log.d(TAG, "onNavigationItemSelected: BLIntent Start...");
             Intent BLIntent=new Intent(MainActivity.this,BLMainActivity.class);
-            startActivity(BLIntent);
+            startActivity(BLIntent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             //
         } else if (id == R.id.nav_gallery) {
 

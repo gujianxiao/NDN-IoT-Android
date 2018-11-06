@@ -13,75 +13,135 @@
         android:orientation="vertical">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="150dp">
+            <EditText
+                android:id="@+id/phoneInfo"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
 
+                android:inputType="textMultiLine"
+                android:text="Device: Nexus 5
+Role: Controller
+Account: Admin"
+                android:visibility="visible" />
             <ImageView
                 android:id="@+id/nexus"
                 android:layout_width="50dp"
                 android:layout_height="100dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentBottom="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/error_field_required"
-                android:visibility="invisible"
-                app:srcCompat="@drawable/nexus" />
-
-            <ImageView
-                android:id="@+id/arrow_right"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:visibility="invisible"
-                app:srcCompat="@drawable/arrow_right" />
+                android:contentDescription="@string/error_field_required"
+                android:visibility="visible"
+                app:srcCompat="@drawable/nexus" />
 
-            <ImageView
-                android:id="@+id/board"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_alignParentRight="true"
+            <Button
+                android:id="@+id/option_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_centerVertical="true"
-                android:visibility="invisible"
-                app:srcCompat="@drawable/nrf52840" />
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="50dp"
+                android:text="Option" />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/phoneInfo"
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:inputType="textMultiLine"
-                android:text="Device: Nexus 5
-Role: Controller
-Account: Admin
-Connected: nRF52849(verified)"
-                android:visibility="invisible" />
-
+            android:layout_height="50dp">
+            <ImageView
+                android:id="@+id/arrow_vertical"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:rotation="90"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="visible"
+                app:srcCompat="@drawable/arrow_right" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp">
             <EditText
                 android:id="@+id/boardInfo"
-                android:layout_width="160dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:ems="10"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+
                 android:inputType="textMultiLine"
                 android:text="Device: nRF52840
 Role: Actuator
-Service: Admin
-Owner: Admin
-Connected: LED1,2"
-                android:visibility="invisible" />
+Owner:"
+                android:visibility="visible" />
+            <ImageView
+                android:id="@+id/board"
+                android:layout_width="80dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/error_field_required"
+                android:visibility="visible"
+                app:srcCompat="@drawable/nrf52840" />
 
+            <Switch
+                android:id="@+id/switch1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="60dp"
+                android:layout_marginBottom="50dp"
+                android:text="OFF " />
         </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <ImageView
+                android:id="@+id/arrow_vertical2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:rotation="90"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="visible"
+                app:srcCompat="@drawable/arrow_right" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp">
+            <EditText
+                android:id="@+id/boardInfo2"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
 
+                android:inputType="textMultiLine"
+                android:text="Device: nRF52840
+Role: Actuator
+Owner:"
+                android:visibility="visible" />
+            <ImageView
+                android:id="@+id/board2"
+                android:layout_width="80dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/error_field_required"
+                android:visibility="visible"
+                app:srcCompat="@drawable/nrf52840" />
+            <Switch
+                android:id="@+id/switch2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="60dp"
+                android:layout_marginBottom="50dp"
+                android:text="OFF " />
+        </RelativeLayout>
     </android.support.v7.widget.LinearLayoutCompat>
-
-
-
-
-
 </android.support.constraint.ConstraintLayout>

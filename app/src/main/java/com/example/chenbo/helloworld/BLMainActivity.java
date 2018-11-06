@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.bluetooth.BluetoothAdapter;
 import android.text.InputType;
+import android.transition.Explode;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -525,6 +526,7 @@ public class BLMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate: start BL service...");
         super.onCreate(savedInstanceState);
+        getWindow().setEnterTransition(new Explode());
         setContentView(R.layout.blactivity_main);
 
         mainActivity = this;
