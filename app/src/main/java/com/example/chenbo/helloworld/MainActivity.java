@@ -26,9 +26,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Switch;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
@@ -62,9 +64,12 @@ public class MainActivity extends AppCompatActivity
         ImageView arrow=(ImageView) findViewById(R.id.arrow_vertical);
 
         ImageView devicePic2=(ImageView) findViewById(R.id.board2);
-        EditText deviceTex2=(EditText) findViewById(R.id.boardInfo2);
+        EditText deviceText2=(EditText) findViewById(R.id.boardInfo2);
 
         ImageView arrow2=(ImageView) findViewById(R.id.arrow_vertical2);
+
+        Button switchButton1=(Button)findViewById(R.id.switch1);
+        Button switchButton2=(Button)findViewById(R.id.switch2);
         @Override
         protected Object doInBackground(Object[] objects) {
             Log.d(TAG, "doInBackground: UIUpdateTask");
@@ -88,11 +93,21 @@ public class MainActivity extends AppCompatActivity
         protected void onPreExecute(){
             Log.d(TAG, "onPreExecute: UIUpdateTask");
             //set visible of pic;
-            devicePic.setVisibility(View.VISIBLE);
+
             phonePic.setVisibility(View.VISIBLE);
-            deviceText.setVisibility(View.VISIBLE);
             phoneText.setVisibility(View.VISIBLE);
+
+            devicePic.setVisibility(View.VISIBLE);
+            deviceText.setVisibility(View.VISIBLE);
             arrow.setVisibility(View.VISIBLE);
+            devicePic2.setVisibility(View.VISIBLE);
+            deviceText2.setVisibility(View.VISIBLE);
+            arrow2.setVisibility(View.VISIBLE);
+
+            switchButton1.setVisibility(View.VISIBLE);
+            switchButton2.setVisibility(View.VISIBLE);
+
+
         }
 
     }
@@ -114,28 +129,39 @@ public class MainActivity extends AppCompatActivity
 
         ImageView arrow2=(ImageView) findViewById(R.id.arrow_vertical2);
 
-        Button optionButton=(Button)findViewById(R.id.option_button);
+        Button optionButton=(Button) findViewById(R.id.option_button);
 
-        Button switchButton1=(Button)findViewById(R.id.switch1);
-
-        switchButton1.setOnClickListener(new View.OnClickListener() {
+        Switch switchButton1=(Switch)findViewById(R.id.switch1);
+        switchButton1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                //change the title and turn on the device here;
-                Toast.makeText(MainActivity.this,"Turn on the device",Toast.LENGTH_SHORT);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    //bootstrap operation can be here
+                    Log.d(TAG, "onClick: switchButtton1...");
+                    Toast.makeText(MainActivity.this,"Turn on the device",Toast.LENGTH_SHORT);
+                    switchButton1.setText("ON");
+                }
+                else
+                    //shut down operation can be here
+                    switchButton1.setText("OFF");
             }
         });
 
-        Button switchButton2=(Button)findViewById(R.id.switch2);
-
-        switchButton2.setOnClickListener(new View.OnClickListener() {
+        Switch switchButton2=(Switch)findViewById(R.id.switch2);
+        switchButton2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                //change the title and turn on the device here;
-                Toast.makeText(MainActivity.this,"Turn on the device",Toast.LENGTH_SHORT);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    //bootstrap operation can be here
+                    Log.d(TAG, "onClick: switchButtton2...");
+                    Toast.makeText(MainActivity.this,"Turn on the device",Toast.LENGTH_SHORT);
+                    switchButton2.setText("ON");
+                }
+                else
+                    //shut down operation can be here
+                    switchButton2.setText("OFF");
             }
         });
-
 
         optionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,6 +194,7 @@ public class MainActivity extends AppCompatActivity
                                         Toast.makeText(MainActivity.this, "Start to bootstrap B_1", Toast.LENGTH_SHORT).show();
                                     }
                                 });
+                                pingDialog.show();
                                 break;
                             case R.id.ping_b2:
                                 AlertDialog.Builder pingDialog2=new AlertDialog.Builder(MainActivity.this);
@@ -186,6 +213,7 @@ public class MainActivity extends AppCompatActivity
                                         Toast.makeText(MainActivity.this, "Start to bootstrap B_2", Toast.LENGTH_SHORT).show();
                                     }
                                 });
+                                pingDialog2.show();
                                 break;
                             case R.id.system_info:
                                 Toast.makeText(MainActivity.this, "Three nodes", Toast.LENGTH_SHORT).show();
@@ -205,6 +233,7 @@ public class MainActivity extends AppCompatActivity
 
 
         float devicePicLocationY=devicePic.getTranslationY();
+        float devicePic2LocationY=devicePic2.getTranslationY();
 
 
 
@@ -225,7 +254,8 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                         //start to bootstrap the device here
                         Toast.makeText(MainActivity.this,"Start to bootstrap the device",Toast.LENGTH_LONG).show();
-                        ObjectAnimator animator = ObjectAnimator.ofFloat(arrow, "translationY",0,devicePicLocationY);
+                        Log.d(TAG, "onClick: start animation of arrow");
+                        ObjectAnimator animator = ObjectAnimator.ofFloat(arrow, "translationY",devicePicLocationY,devicePic2LocationY);
 
 // ofFloat()作用有两个
 // 1. 创建动画实例
@@ -238,7 +268,7 @@ public class MainActivity extends AppCompatActivity
 // 以此类推
 // 至于如何从初始值 过渡到 结束值，同样是由估值器决定，此处ObjectAnimator.ofFloat（）是有系统内置的浮点型估值器FloatEvaluator，同ValueAnimator讲解
 
-                        animator.setDuration(500);
+                        animator.setDuration(1000);
                         // 设置动画运行的时长
 
                         animator.setStartDelay(500);
@@ -254,6 +284,7 @@ public class MainActivity extends AppCompatActivity
                         // ValueAnimator.REVERSE:倒序回放
 
                         animator.start();
+                        Log.d(TAG, "onClick: finish animation");
 // 启动动画
                     }
                 });
