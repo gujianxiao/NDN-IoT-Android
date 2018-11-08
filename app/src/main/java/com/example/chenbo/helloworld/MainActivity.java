@@ -1,5 +1,6 @@
 package com.example.chenbo.helloworld;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
@@ -138,12 +139,13 @@ public class MainActivity extends AppCompatActivity
                 if(isChecked){
                     //bootstrap operation can be here
                     Log.d(TAG, "onClick: switchButtton1...");
-                    Toast.makeText(MainActivity.this,"Turn on the device",Toast.LENGTH_SHORT);
+                    Toast.makeText(MainActivity.this,"Turn on the device",Toast.LENGTH_SHORT).show();
                     switchButton1.setText("ON");
                 }
                 else
                     //shut down operation can be here
                     switchButton1.setText("OFF");
+                Toast.makeText(MainActivity.this,"Turn off the device",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -154,18 +156,24 @@ public class MainActivity extends AppCompatActivity
                 if(isChecked){
                     //bootstrap operation can be here
                     Log.d(TAG, "onClick: switchButtton2...");
-                    Toast.makeText(MainActivity.this,"Turn on the device",Toast.LENGTH_SHORT);
+                    Toast.makeText(MainActivity.this,"Turn on the device",Toast.LENGTH_SHORT).show();
                     switchButton2.setText("ON");
                 }
                 else
                     //shut down operation can be here
                     switchButton2.setText("OFF");
+                Toast.makeText(MainActivity.this,"Turn off the device",Toast.LENGTH_SHORT).show();
             }
         });
 
         optionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                float arrowLocationX=arrow.getTranslationX();
+                float arrowLocationY=arrow.getTranslationY();
+                float arrow2LocationX=arrow2.getTranslationX();
+                float arrow2LocationY=arrow2.getTranslationY();
+                Log.d(TAG, "arrowLocationX:"+arrowLocationX+"; arrowLocationY:"+arrowLocationY);
                 //创建弹出式菜单对象（最低版本11）
                 PopupMenu popup = new PopupMenu(MainActivity.this, v);//第二个参数是绑定的那个view
                 //获取菜单填充器
@@ -186,6 +194,62 @@ public class MainActivity extends AppCompatActivity
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         Toast.makeText(MainActivity.this, "Start to bootstrap B_1", Toast.LENGTH_SHORT).show();
+                                        Log.d(TAG, "onClick: start animation of arrow");
+                                        ObjectAnimator animator = ObjectAnimator.ofFloat(arrow, "translationY",arrowLocationY,arrowLocationY+140);
+
+// ofFloat()作用有两个
+// 1. 创建动画实例
+// 2. 参数设置：参数说明如下
+// Object object：需要操作的对象
+// String property：需要操作的对象的属性
+// float ....values：动画初始值 & 结束值（不固定长度）
+// 若是两个参数a,b，则动画效果则是从属性的a值到b值
+// 若是三个参数a,b,c，则则动画效果则是从属性的a值到b值再到c值
+// 以此类推
+// 至于如何从初始值 过渡到 结束值，同样是由估值器决定，此处ObjectAnimator.ofFloat（）是有系统内置的浮点型估值器FloatEvaluator，同ValueAnimator讲解
+
+                                        animator.setDuration(4000);
+                                        // 设置动画运行的时长
+
+                                        //animator.setStartDelay(500);
+                                        // 设置动画延迟播放时间
+
+                                        animator.setRepeatCount(2);
+                                        // 设置动画重复播放次数 = 重放次数+1
+                                        // 动画播放次数 = infinite时,动画无限重复
+
+                                        animator.setRepeatMode(ValueAnimator.RESTART);
+                                        // 设置重复播放动画模式
+                                        // ValueAnimator.RESTART(默认):正序重放
+                                        // ValueAnimator.REVERSE:倒序回放
+                                        animator.addListener(new Animator.AnimatorListener() {
+                                            @Override
+                                            public void onAnimationStart(Animator animation) {
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationEnd(Animator animation) {
+                                                arrow.setTranslationX(arrowLocationX);
+                                                arrow.setTranslationY(arrowLocationY);
+                                                Toast.makeText(MainActivity.this,"finish bootstrap actuator_1",Toast.LENGTH_SHORT).show();
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationCancel(Animator animation) {
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationRepeat(Animator animation) {
+
+                                            }
+                                        });
+                                        animator.start();
+                                        // 启动动画
+
+                                        Log.d(TAG, "onClick: finish animation");
                                     }
                                 });
                                 pingDialog.setNegativeButton("Ping", new DialogInterface.OnClickListener() {
@@ -205,6 +269,62 @@ public class MainActivity extends AppCompatActivity
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         Toast.makeText(MainActivity.this, "Start to bootstrap B_2", Toast.LENGTH_SHORT).show();
+                                        Log.d(TAG, "onClick: start animation of arrow2");
+                                        ObjectAnimator animator = ObjectAnimator.ofFloat(arrow2, "translationY",arrowLocationY,arrow2LocationY+140);
+
+// ofFloat()作用有两个
+// 1. 创建动画实例
+// 2. 参数设置：参数说明如下
+// Object object：需要操作的对象
+// String property：需要操作的对象的属性
+// float ....values：动画初始值 & 结束值（不固定长度）
+// 若是两个参数a,b，则动画效果则是从属性的a值到b值
+// 若是三个参数a,b,c，则则动画效果则是从属性的a值到b值再到c值
+// 以此类推
+// 至于如何从初始值 过渡到 结束值，同样是由估值器决定，此处ObjectAnimator.ofFloat（）是有系统内置的浮点型估值器FloatEvaluator，同ValueAnimator讲解
+
+                                        animator.setDuration(4000);
+                                        // 设置动画运行的时长
+
+                                        //animator.setStartDelay(500);
+                                        // 设置动画延迟播放时间
+
+                                        animator.setRepeatCount(2);
+                                        // 设置动画重复播放次数 = 重放次数+1
+                                        // 动画播放次数 = infinite时,动画无限重复
+
+                                        animator.setRepeatMode(ValueAnimator.RESTART);
+                                        // 设置重复播放动画模式
+                                        // ValueAnimator.RESTART(默认):正序重放
+                                        // ValueAnimator.REVERSE:倒序回放
+                                        animator.addListener(new Animator.AnimatorListener() {
+                                            @Override
+                                            public void onAnimationStart(Animator animation) {
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationEnd(Animator animation) {
+                                                arrow2.setTranslationX(arrow2LocationX);
+                                                arrow2.setTranslationY(arrow2LocationY);
+                                                Toast.makeText(MainActivity.this,"finish bootstrap actuator_1",Toast.LENGTH_SHORT).show();
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationCancel(Animator animation) {
+
+                                            }
+
+                                            @Override
+                                            public void onAnimationRepeat(Animator animation) {
+
+                                            }
+                                        });
+                                        animator.start();
+                                        // 启动动画
+
+                                        Log.d(TAG, "onClick: finish animation");
                                     }
                                 });
                                 pingDialog2.setNegativeButton("Ping", new DialogInterface.OnClickListener() {
@@ -232,11 +352,6 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        float devicePicLocationY=devicePic.getTranslationY();
-        float devicePic2LocationY=devicePic2.getTranslationY();
-
-
-
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
 
@@ -247,45 +362,13 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 AlertDialog.Builder deviceDialog=new AlertDialog.Builder(MainActivity.this);
                 deviceDialog.setTitle("nRF52840");
-                deviceDialog.setMessage("Bootstrap the device?");
+                deviceDialog.setMessage("Reset the device?");
                 deviceDialog.setCancelable(false);
                 deviceDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //start to bootstrap the device here
-                        Toast.makeText(MainActivity.this,"Start to bootstrap the device",Toast.LENGTH_LONG).show();
-                        Log.d(TAG, "onClick: start animation of arrow");
-                        ObjectAnimator animator = ObjectAnimator.ofFloat(arrow, "translationY",devicePicLocationY,devicePic2LocationY);
-
-// ofFloat()作用有两个
-// 1. 创建动画实例
-// 2. 参数设置：参数说明如下
-// Object object：需要操作的对象
-// String property：需要操作的对象的属性
-// float ....values：动画初始值 & 结束值（不固定长度）
-// 若是两个参数a,b，则动画效果则是从属性的a值到b值
-// 若是三个参数a,b,c，则则动画效果则是从属性的a值到b值再到c值
-// 以此类推
-// 至于如何从初始值 过渡到 结束值，同样是由估值器决定，此处ObjectAnimator.ofFloat（）是有系统内置的浮点型估值器FloatEvaluator，同ValueAnimator讲解
-
-                        animator.setDuration(1000);
-                        // 设置动画运行的时长
-
-                        animator.setStartDelay(500);
-                        // 设置动画延迟播放时间
-
-                        animator.setRepeatCount(2);
-                        // 设置动画重复播放次数 = 重放次数+1
-                        // 动画播放次数 = infinite时,动画无限重复
-
-                        animator.setRepeatMode(ValueAnimator.RESTART);
-                        // 设置重复播放动画模式
-                        // ValueAnimator.RESTART(默认):正序重放
-                        // ValueAnimator.REVERSE:倒序回放
-
-                        animator.start();
-                        Log.d(TAG, "onClick: finish animation");
-// 启动动画
+                        Toast.makeText(MainActivity.this,"Start to reset the device",Toast.LENGTH_LONG).show();
                     }
                 });
                 deviceDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
