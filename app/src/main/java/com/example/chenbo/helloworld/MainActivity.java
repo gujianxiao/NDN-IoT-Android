@@ -34,8 +34,15 @@ import android.widget.PopupMenu;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import net.named_data.jndn.Data;
+import net.named_data.jndn.Face;
+import net.named_data.jndn.Interest;
+import net.named_data.jndn.Name;
+import net.named_data.jndn.OnData;
+import net.named_data.jndn.OnTimeout;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,SendInterestTask.Callback {
 
     private String TAG="MainActivity";
 
@@ -55,6 +62,13 @@ public class MainActivity extends AppCompatActivity
 
         }
     };
+
+    @Override
+    public void callbackData(Data data) {
+        Log.i(TAG, "callbackData: get callback data here");
+        //According to different data to do different corresponse
+    }
+
     public class UIUpdateTask extends AsyncTask {
         ImageView phonePic=(ImageView) findViewById(R.id.nexus);
         EditText phoneText=(EditText) findViewById(R.id.phoneInfo);
@@ -133,6 +147,10 @@ public class MainActivity extends AppCompatActivity
         Button optionButton=(Button) findViewById(R.id.option_button);
 
         Switch switchButton1=(Switch)findViewById(R.id.switch1);
+
+        Name bootstrapInterest= new Name("/NDN-IoT/boostrap");
+
+
         switchButton1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -194,6 +212,11 @@ public class MainActivity extends AppCompatActivity
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         Toast.makeText(MainActivity.this, "Start to bootstrap B_1", Toast.LENGTH_SHORT).show();
+                                        //send bootstrap Interest here
+                                        Name bootstrapInterestB1=new Name(bootstrapInterest);
+                                        bootstrapInterestB1.append("/Board1");
+                                        new SendInterestTask(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,bootstrapInterestB1);
+
                                         Log.d(TAG, "onClick: start animation of arrow");
                                         ObjectAnimator animator = ObjectAnimator.ofFloat(arrow, "translationY",arrowLocationY,arrowLocationY+140);
 
@@ -255,7 +278,7 @@ public class MainActivity extends AppCompatActivity
                                 pingDialog.setNegativeButton("Ping", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(MainActivity.this, "Start to bootstrap B_1", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this, "Start to ping B_1", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 pingDialog.show();
@@ -269,6 +292,9 @@ public class MainActivity extends AppCompatActivity
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         Toast.makeText(MainActivity.this, "Start to bootstrap B_2", Toast.LENGTH_SHORT).show();
+                                        Name bootstrapInterestB2=new Name(bootstrapInterest);
+                                        bootstrapInterestB2.append("/Board2");
+                                        new SendInterestTask(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,bootstrapInterestB2);
                                         Log.d(TAG, "onClick: start animation of arrow2");
                                         ObjectAnimator animator = ObjectAnimator.ofFloat(arrow2, "translationY",arrowLocationY,arrow2LocationY+140);
 
@@ -330,8 +356,8 @@ public class MainActivity extends AppCompatActivity
                                 pingDialog2.setNegativeButton("Ping", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(MainActivity.this, "Start to bootstrap B_2", Toast.LENGTH_SHORT).show();
-                                    }
+                                        Toast.makeText(MainActivity.this, "Start to ping B_2", Toast.LENGTH_SHORT).show();
+                                        }
                                 });
                                 pingDialog2.show();
                                 break;
@@ -368,13 +394,38 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //start to bootstrap the device here
-                        Toast.makeText(MainActivity.this,"Start to reset the device",Toast.LENGTH_LONG).show();
-                    }
+                        Toast.makeText(MainActivity.this,"Start to change the authority",Toast.LENGTH_LONG).show();
+                        }
                 });
                 deviceDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                    //done nothing here
+                    }
+                });
+                deviceDialog.show();
+            }
+        });
+        devicePic2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder deviceDialog=new AlertDialog.Builder(MainActivity.this);
+                deviceDialog.setTitle("nRF52840");
+                deviceDialog.setMessage("Reset the device?");
+                deviceDialog.setCancelable(false);
+                deviceDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //start to bootstrap the device here
+                        Toast.makeText(MainActivity.this,"Start to change the authority",Toast.LENGTH_LONG).show();
+
+
+                    }
+                });
+                deviceDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //done nothing here
                     }
                 });
                 deviceDialog.show();
