@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity
         Switch switchButton1=(Switch)findViewById(R.id.switch1);
 
         Name bootstrapInterest= new Name("/NDN-IoT/boostrap");
+        Name commandInterest= new Name("/NDN-IoT/authorityChange");
 
 
         switchButton1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -386,63 +387,126 @@ public class MainActivity extends AppCompatActivity
         devicePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder deviceDialog=new AlertDialog.Builder(MainActivity.this);
-                deviceDialog.setTitle("nRF52840");
-                deviceDialog.setMessage("Reset the device?");
-                deviceDialog.setCancelable(false);
-                deviceDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //start to bootstrap the device here
-                        Toast.makeText(MainActivity.this,"Start to change the authority",Toast.LENGTH_LONG).show();
-                        }
-                });
-                deviceDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                   //done nothing here
-                    }
-                });
-                deviceDialog.show();
+                //创建弹出式菜单对象（最低版本11）
+                PopupMenu popup = new PopupMenu(MainActivity.this, v);//第二个参数是绑定的那个view
+                //获取菜单填充器
+                MenuInflater inflater = popup.getMenuInflater();
+                //填充菜单
+                inflater.inflate(R.menu.board_option, popup.getMenu());
+                //绑定菜单项的点击事件
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                                     @Override
+                                                     public boolean onMenuItemClick(MenuItem item) {
+                                                         switch (item.getItemId()) {
+                                                             case R.id.authority_controller:
+                                                                 Name commandInterestB1_1=new Name(commandInterest);
+                                                                 commandInterestB1_1.append("/Board1/ControllerOnly");
+                                                                 new SendInterestTask(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,commandInterestB1_1);
+                                                                 Toast.makeText(MainActivity.this,"Start to change the authority to controller",Toast.LENGTH_LONG).show();
+                                                                 break;
+                                                             case R.id.authority_all:
+                                                                 Name commandInterestB1_2=new Name(commandInterest);
+                                                                 commandInterestB1_2.append("/Board1/AlLNode");
+                                                                 new SendInterestTask(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,commandInterestB1_2);
+                                                                 Toast.makeText(MainActivity.this,"Start to change the authority to all node",Toast.LENGTH_LONG).show();
+                                                                 break;
+                                                             default:
+                                                                 break;
+                                                         }
+                                                         return false;
+                                                     }
+                                                 });
+                popup.show();
+
+//                AlertDialog.Builder deviceDialog=new AlertDialog.Builder(MainActivity.this);
+//                deviceDialog.setTitle("nRF52840");
+//                deviceDialog.setMessage("Reset the device?");
+//                deviceDialog.setCancelable(false);
+//                deviceDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        //start to bootstrap the device here
+//                        Toast.makeText(MainActivity.this,"Start to change the authority",Toast.LENGTH_LONG).show();
+//                        }
+//                });
+//                deviceDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                   //done nothing here
+//                    }
+//                });
+//                deviceDialog.show();
             }
         });
         devicePic2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder deviceDialog=new AlertDialog.Builder(MainActivity.this);
-                deviceDialog.setTitle("nRF52840");
-                deviceDialog.setMessage("Reset the device?");
-                deviceDialog.setCancelable(false);
-                deviceDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                //创建弹出式菜单对象（最低版本11）
+                PopupMenu popup = new PopupMenu(MainActivity.this, v);//第二个参数是绑定的那个view
+                //获取菜单填充器
+                MenuInflater inflater = popup.getMenuInflater();
+                //填充菜单
+                inflater.inflate(R.menu.board_option, popup.getMenu());
+                //绑定菜单项的点击事件
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //start to bootstrap the device here
-                        Toast.makeText(MainActivity.this,"Start to change the authority",Toast.LENGTH_LONG).show();
-
-
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.authority_controller:
+                                Name commandInterestB2_1=new Name(commandInterest);
+                                commandInterestB2_1.append("/Board2/ControllerOnly");
+                                new SendInterestTask(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,commandInterestB2_1);
+                                Toast.makeText(MainActivity.this,"Start to change the authority to controller",Toast.LENGTH_LONG).show();
+                                break;
+                            case R.id.authority_all:
+                                Name commandInterestB1_2=new Name(commandInterest);
+                                commandInterestB1_2.append("/Board2/AlLNode");
+                                new SendInterestTask(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,commandInterestB1_2);
+                                Toast.makeText(MainActivity.this,"Start to change the authority to all node",Toast.LENGTH_LONG).show();
+                                break;
+                            default:
+                                break;
+                        }
+                        return false;
                     }
                 });
-                deviceDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //done nothing here
-                    }
-                });
-                deviceDialog.show();
+                popup.show();
+
+
+//                AlertDialog.Builder deviceDialog=new AlertDialog.Builder(MainActivity.this);
+//                deviceDialog.setTitle("nRF52840");
+//                deviceDialog.setMessage("Reset the device?");
+//                deviceDialog.setCancelable(false);
+//                deviceDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        //start to bootstrap the device here
+//                        Toast.makeText(MainActivity.this,"Start to change the authority",Toast.LENGTH_LONG).show();
+//
+//
+//                    }
+//                });
+//                deviceDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        //done nothing here
+//                    }
+//                });
+//                deviceDialog.show();
             }
         });
 
 
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
