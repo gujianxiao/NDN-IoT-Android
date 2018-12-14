@@ -40,8 +40,8 @@ public class SendInterestTask extends AsyncTask <Name,Integer,Boolean> {
         Log.i(TAG, "doInBackground: get into do in background");
         incomingData incomD = new incomingData();
         //String tempName=new Name(PendingName);
-        Interest pendingInterest=new Interest(PendingName);
-        pendingInterest.setName(PendingName);
+        Interest pendingInterest=new Interest(PendingName[0]);
+//        pendingInterest.setName(PendingName);
         try{
             face.expressInterest(pendingInterest,incomD);
             face.processEvents();
