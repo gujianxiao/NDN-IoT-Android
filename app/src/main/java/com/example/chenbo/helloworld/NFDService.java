@@ -9,7 +9,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.intel.jndn.utils.Publisher;
+//import com.intel.jndn.utils.Publisher;
 
 import net.named_data.jndn.Data;
 import net.named_data.jndn.Face;
@@ -92,7 +92,7 @@ public class NFDService extends Service {
     // the Publisher from jndn utils is not currently used to publish device status information; this is because
     // there is no corresponding object in the .NET library, so we just make the mobile terminal send out interests
     // every second and this NFDService publishes information
-    Publisher statusPublisher;
+    //Publisher statusPublisher;
     boolean networkThreadCurrentlyRunning = false;
 
     // just kind of a hack, will respond with the current state to every 5th status interest just in case something gets restarted or something
