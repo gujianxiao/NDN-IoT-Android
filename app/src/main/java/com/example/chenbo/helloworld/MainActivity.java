@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity
 
     private String TAG="MainActivity";
 
+    private int signOnFlag=0;
+
     private MainUIUpdateService.UIUpdateBinder uiUpdateBinder;
 
 //    // Log for tagging.
@@ -92,17 +94,11 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onInterest(Name prefix, Interest interest, Face face, long interestFilterId,
                                InterestFilter filter) {
-            Log.i(TAG, "onInterest: ");
             Log.i(TAG, "onInterest got called, prefix of interest: " + prefix.toUri());
 
             if (prefix.toUri().equals(KD_PUB_CERTIFICATE_NAME_PREFIX + m_expectedDeviceIdentifierHexString)) {
                 Log.i(TAG, "Got interest for certificate of device with device identifier: " +
                         m_expectedDeviceIdentifierHexString);
-                //start to show pic when receive Interest...
-                Intent mainUIUpdateService= new Intent(MainActivity.this,MainUIUpdateService.class);
-                bindService(mainUIUpdateService,uiServiceConnection,BIND_AUTO_CREATE);
-                new UIUpdateTask().execute();
-                unbindService(uiServiceConnection);
 
 
                 try {
@@ -130,7 +126,9 @@ public class MainActivity extends AppCompatActivity
                     Log.i(TAG, "Name of device's KDPubCertificate: " +
                             m_SignOnBasicControllerBLE.getKDPubCertificateOfDevice(deviceIdentifierHexString)
                                     .getName().toUri()
+
                     );
+                    signOnFlag=1;
 
                     // Create a BLE face to the device that onboarding completed successfully for.
                     m_bleFace = new BLEFace(m_SignOnBasicControllerBLE.getMacAddressOfDevice(deviceIdentifierHexString),
@@ -197,7 +195,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Object o) {
-            Toast.makeText(MainActivity.this,"Finishing scan",Toast.LENGTH_SHORT ).show();
+            //Toast.makeText(MainActivity.this,"Finishing scan",Toast.LENGTH_SHORT ).show();
             super.onPostExecute(o);
         }
 
@@ -684,11 +682,13 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-//            Intent mainUIUpdateService= new Intent(MainActivity.this,MainUIUpdateService.class);
-//            bindService(mainUIUpdateService,uiServiceConnection,BIND_AUTO_CREATE);
-//            new UIUpdateTask().execute();
-//            unbindService(uiServiceConnection);
+        if (id == R.id.action_settings&&signOnFlag==1) {
+            //start to show pic when receive Interest...
+            Log.i(TAG, "Ready to show the pic in the map: ");
+            Intent mainUIUpdateService= new Intent(MainActivity.this,MainUIUpdateService.class);
+            bindService(mainUIUpdateService,uiServiceConnection,BIND_AUTO_CREATE);
+            new UIUpdateTask().execute();
+            unbindService(uiServiceConnection);
             return true;
         }
 

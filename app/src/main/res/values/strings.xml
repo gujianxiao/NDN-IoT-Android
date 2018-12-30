@@ -18,7 +18,7 @@
     <string name="nav_header_title">NDN-IoT</string>
     <string name="nav_header_subtitle">cb361991@gmail.con</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Scan</string>
+    <string name="action_settings">Show signed on device</string>
     <string name="enableBT">Enable Bluetooth</string>
     <string name="enableLocation">Enable Location Services</string>
     <string name="enableStorage">Enable Storage</string>
