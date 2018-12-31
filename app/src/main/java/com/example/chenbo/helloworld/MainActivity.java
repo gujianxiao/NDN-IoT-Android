@@ -32,6 +32,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import net.named_data.jndn.Data;
@@ -65,6 +66,10 @@ public class MainActivity extends AppCompatActivity
     private String TAG="MainActivity";
 
     private int signOnFlag=0;
+    private int signOnCount=0;
+
+
+    private TextView m_log;
 
     private MainUIUpdateService.UIUpdateBinder uiUpdateBinder;
 
@@ -83,10 +88,12 @@ public class MainActivity extends AppCompatActivity
 
     // Reference to manage a BLE face that is created to interact with a device after sign on.
     private BLEFace m_bleFace;
+    private BLEFace m_bleFace2;
 
 
     // The device identifier of the example nRF52840, in hex string format.
     private String m_expectedDeviceIdentifierHexString = "010101010101010101010101";
+    private String m_expectedDeviceIdentifierHexString2 = "010101010101010101010102";
 
     // Callback for when an interest is received. In this example, the nRf52840 sends an interest to
     // us after sign on is complete, and triggers this callback.
@@ -111,6 +118,21 @@ public class MainActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
             }
+            if (prefix.toUri().equals(KD_PUB_CERTIFICATE_NAME_PREFIX + m_expectedDeviceIdentifierHexString2)) {
+                Log.i(TAG, "Got interest for certificate of device with device identifier: " +
+                        m_expectedDeviceIdentifierHexString2);
+
+
+                try {
+                    Log.i(TAG, "Responding to interest from device with its certificate...");
+                    face.putData(
+                            SignOnBasicControllerBLE.getInstance().
+                                    getKDPubCertificateOfDevice(m_expectedDeviceIdentifierHexString2)
+                    );
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     };
 
@@ -129,10 +151,21 @@ public class MainActivity extends AppCompatActivity
 
                     );
                     signOnFlag=1;
+                    signOnCount++;
 
                     // Create a BLE face to the device that onboarding completed successfully for.
-                    m_bleFace = new BLEFace(m_SignOnBasicControllerBLE.getMacAddressOfDevice(deviceIdentifierHexString),
-                            onInterest);
+                    if(deviceIdentifierHexString.equals(m_expectedDeviceIdentifierHexString)) {
+                        Log.i(TAG, "onDeviceSignOnComplete: create ble face for board 1");
+                        m_bleFace = new BLEFace(m_SignOnBasicControllerBLE.getMacAddressOfDevice(deviceIdentifierHexString),
+                                onInterest);
+                    }
+                    else if(deviceIdentifierHexString.equals(m_expectedDeviceIdentifierHexString2)) {
+                        Log.i(TAG, "onDeviceSignOnComplete: create ble face for board 2");
+                        m_bleFace2 = new BLEFace(m_SignOnBasicControllerBLE.getMacAddressOfDevice(deviceIdentifierHexString),
+                                onInterest);
+                    }
+                    else
+                        Log.i(TAG, "onDeviceSignOnComplete: wrong device identifier...");
                 }
 
                 @Override
@@ -210,29 +243,257 @@ public class MainActivity extends AppCompatActivity
         protected void onPreExecute(){
             Log.d(TAG, "onPreExecute: UIUpdateTask");
             //set visible of pic;
+            if(signOnCount==1) {
+                phonePic.setVisibility(View.VISIBLE);
+                phoneText.setVisibility(View.VISIBLE);
 
-            phonePic.setVisibility(View.VISIBLE);
-            phoneText.setVisibility(View.VISIBLE);
+                devicePic.setVisibility(View.VISIBLE);
+                deviceText.setVisibility(View.VISIBLE);
+                arrow.setVisibility(View.VISIBLE);
+                switchButton1.setVisibility(View.VISIBLE);
+            }
+            if(signOnCount>1) {
+                devicePic.setVisibility(View.VISIBLE);
+                deviceText.setVisibility(View.VISIBLE);
+                arrow.setVisibility(View.VISIBLE);
+                switchButton1.setVisibility(View.VISIBLE);
 
-            devicePic.setVisibility(View.VISIBLE);
-            deviceText.setVisibility(View.VISIBLE);
-            arrow.setVisibility(View.VISIBLE);
-            devicePic2.setVisibility(View.VISIBLE);
-            deviceText2.setVisibility(View.VISIBLE);
-            arrow2.setVisibility(View.VISIBLE);
-
-            switchButton1.setVisibility(View.VISIBLE);
-            switchButton2.setVisibility(View.VISIBLE);
+                devicePic2.setVisibility(View.VISIBLE);
+                deviceText2.setVisibility(View.VISIBLE);
+                arrow2.setVisibility(View.VISIBLE);
+                switchButton2.setVisibility(View.VISIBLE);
+            }
 
 
         }
 
     }
 
+
+//    public class signOnTask extends AsyncTask {
+//        @Override
+//        protected Object doInBackground(Object[] objects) {
+//            Log.d(TAG, "doInBackground: signOnTask");
+//            NDNLiteSupportInit.NDNLiteSupportInit();
+//
+//            CertificateV2 trustAnchorCertificate = new CertificateV2();
+//
+//// initializing the BLEUnicastConnectionMaintainer
+//            // (YOU MUST DO THIS FOR SecureSignOnControllerBLE AND BLEFace TO FUNCTION AT ALL)
+//            m_BLEUnicastConnectionMaintainer = BLEUnicastConnectionMaintainer.getInstance();
+//            m_BLEUnicastConnectionMaintainer.initialize(MainActivity.this);
+//
+//            // initializing the SignOnControllerBLE
+//            m_SignOnBasicControllerBLE = SignOnBasicControllerBLE.getInstance();
+//            m_SignOnBasicControllerBLE.initialize(SIGN_ON_VARIANT_BASIC_ECC_256,
+//                    m_secureSignOnBasicControllerBLECallbacks, trustAnchorCertificate);
+//
+//            // Creating a certificate from the device's preknown KS key pair public key.
+//            CertificateV2 KSpubCertificateDevice1 = new CertificateV2();
+//            try {
+//                KSpubCertificateDevice1.setContent(
+//                        new Blob(asnEncodeRawECPublicKeyBytes(BOOTSTRAP_ECC_PUBLIC_NO_POINT_IDENTIFIER))
+//                );
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//            // Adding the device to the SignOnControllerBLE's list of devices pending onboarding; if
+//            // this is not done, the SignOnControllerBLE would ignore bootstrapping requests from the
+//            // device.
+//            m_SignOnBasicControllerBLE.addDevicePendingSignOn(KSpubCertificateDevice1, DEVICE_IDENTIFIER,
+//                    SECURE_SIGN_ON_CODE);
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Object o) {
+//            //Toast.makeText(MainActivity.this,"Finishing scan",Toast.LENGTH_SHORT ).show();
+//            super.onPostExecute(o);
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(Object[] values) {
+//            Log.d(TAG, "doInBackground: signOnTask");
+//            super.onProgressUpdate(values);
+//        }
+//
+//        @Override
+//
+//        protected void onPreExecute(){
+//            Log.d(TAG, "onPreExecute: signOnTask");
+//        }
+//
+//    }
+
+    public class SendInterestTaskV3 extends AsyncTask <Name,Integer,Boolean> {
+        //private final String TAG="SendInterestTask";
+        // Face face=new Face();
+        Data comeBackData=new Data();
+        @Override
+        protected void onPreExecute(){
+            Log.i(TAG, "onPreExecute:  execute sending interest success!");
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            Log.i(TAG, "onPostExecute:  execute sending interest success!");
+            super.onPostExecute(aBoolean);
+        }
+
+        @Override
+        protected Boolean doInBackground(Name... PendingName) {
+            Log.i(TAG, "doInBackground of SIV3: get into sending interest do in background");
+            incomingData incomD = new incomingData();
+            //String tempName=new Name(PendingName);
+            Interest pendingInterest=new Interest(PendingName[0]);
+//        pendingInterest.setName(PendingName);
+            try{
+                m_bleFace2.expressInterest(pendingInterest,incomD);
+                m_bleFace2.processEvents();
+
+                // We need to sleep for a few milliseconds so we don't use
+                // 100% of
+
+                // the CPU.
+
+                Thread.sleep(50);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+
+
+        //Implementation of Ondata, OnTimeout
+        private class incomingData implements OnData{
+//        @Override
+//        public void onNetworkNack(Interest interest, NetworkNack networkNack) {
+//            Log.i(TAG, "networkNack for interest:" + interest.getName().toUri());
+//            Log.i(TAG, "networkNack:" + networkNack.toString());
+//        }
+//
+//        @Override
+//        public void onTimeout(Interest interest) {
+//            Log.i(TAG, "Time out for interest:" + interest.getName().toUri());
+//        }
+
+            @Override
+            public void onData(Interest interest, Data data) {
+                Log.i(TAG, "Got data packet with name:" + data.getName().toUri());
+                String msg = data.getContent().toString();
+                Log.i(TAG, "onData: " + msg);
+                if (msg.length() == 0) {
+                    Log.i(TAG, "Data is null");
+                } else if (msg.length() > 0) {
+                    comeBackData.setContent(data.getContent());
+                }
+            }
+        }
+    }
+
+
+    public class SendInterestTaskV2 extends AsyncTask <Name,Integer,Boolean> {
+        //private final String TAG="SendInterestTask";
+        // Face face=new Face();
+        Data comeBackData=new Data();
+        @Override
+        protected void onPreExecute(){
+            Log.i(TAG, "onPreExecute:  execute sending interest success!");
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            Log.i(TAG, "onPostExecute:  execute sending interest success!");
+            super.onPostExecute(aBoolean);
+        }
+
+        @Override
+        protected Boolean doInBackground(Name... PendingName) {
+            Log.i(TAG, "doInBackground of SIV2: get into sending interest do in background");
+             incomingData incomD = new incomingData();
+            //String tempName=new Name(PendingName);
+            Interest pendingInterest=new Interest(PendingName[0]);
+//        pendingInterest.setName(PendingName);
+            try{
+                m_bleFace.expressInterest(pendingInterest,incomD);
+                m_bleFace.processEvents();
+
+                // We need to sleep for a few milliseconds so we don't use
+                // 100% of
+
+                // the CPU.
+
+                Thread.sleep(50);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+
+
+        //Implementation of Ondata, OnTimeout
+        private class incomingData implements OnData{
+//        @Override
+//        public void onNetworkNack(Interest interest, NetworkNack networkNack) {
+//            Log.i(TAG, "networkNack for interest:" + interest.getName().toUri());
+//            Log.i(TAG, "networkNack:" + networkNack.toString());
+//        }
+//
+//        @Override
+//        public void onTimeout(Interest interest) {
+//            Log.i(TAG, "Time out for interest:" + interest.getName().toUri());
+//        }
+
+            @Override
+            public void onData(Interest interest, Data data) {
+                Log.i(TAG, "Got data packet with name:" + data.getName().toUri());
+                String msg = data.getContent().toString();
+                Log.i(TAG, "onData: " + msg);
+                if (msg.length() == 0) {
+                    Log.i(TAG, "Data is null");
+                } else if (msg.length() > 0) {
+                    comeBackData.setContent(data.getContent());
+                }
+            }
+        }
+    }
+
+
+
+
+    private void initializeUI() {
+
+        m_log = (TextView) findViewById(R.id.boardInfo);
+
+    }
+
+    private void logMessageUI(final String TAG, final String msg) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                m_log.append(TAG + ":" + "\n");
+                m_log.append(msg + "\n");
+                m_log.append("------------------------------" + "\n");
+            }
+        });
+    }
+
+    private void logMessage(String TAG, String msg) {
+        Log.d(TAG, msg);
+        logMessageUI(TAG, msg);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        initializeUI();
 
         NDNLiteSupportInit.NDNLiteSupportInit();
 
@@ -263,6 +524,11 @@ public class MainActivity extends AppCompatActivity
         // device.
         m_SignOnBasicControllerBLE.addDevicePendingSignOn(KSpubCertificateDevice1, DEVICE_IDENTIFIER,
                 SECURE_SIGN_ON_CODE);
+        m_SignOnBasicControllerBLE.addDevicePendingSignOn(KSpubCertificateDevice1, DEVICE_IDENTIFIER_2,
+                SECURE_SIGN_ON_CODE);
+
+
+
 
 
 
@@ -355,7 +621,9 @@ public class MainActivity extends AppCompatActivity
                                         //send bootstrap Interest here
                                         Name bootstrapInterestB1=new Name(bootstrapInterest);
                                         bootstrapInterestB1.append("/Board1");
-                                        new SendInterestTask(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,bootstrapInterestB1);
+                                        SendInterestTaskV2 SITask=new SendInterestTaskV2();
+                                        SITask.execute(bootstrapInterestB1);
+                                        //new SendInterestTaskV2(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,bootstrapInterestB1);
 
                                         Log.d(TAG, "onClick: start animation of arrow");
                                         ObjectAnimator animator = ObjectAnimator.ofFloat(arrow, "translationY",arrowLocationY,arrowLocationY+140);
@@ -434,7 +702,9 @@ public class MainActivity extends AppCompatActivity
                                         Toast.makeText(MainActivity.this, "Start to bootstrap B_2", Toast.LENGTH_SHORT).show();
                                         Name bootstrapInterestB2=new Name(bootstrapInterest);
                                         bootstrapInterestB2.append("/Board2");
-                                        new SendInterestTask(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,bootstrapInterestB2);
+                                        SendInterestTaskV2 SITask=new SendInterestTaskV2();
+                                        SITask.execute(bootstrapInterestB2);
+                                        //new SendInterestTaskV2(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,bootstrapInterestB2);
                                         Log.d(TAG, "onClick: start animation of arrow2");
                                         ObjectAnimator animator = ObjectAnimator.ofFloat(arrow2, "translationY",arrowLocationY,arrow2LocationY+140);
 
@@ -538,15 +808,19 @@ public class MainActivity extends AppCompatActivity
                                                      public boolean onMenuItemClick(MenuItem item) {
                                                          switch (item.getItemId()) {
                                                              case R.id.authority_controller:
-                                                                 Name commandInterestB1_1=new Name(commandInterest);
-                                                                 commandInterestB1_1.append("/Board1/ControllerOnly");
-                                                                 new SendInterestTask(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,commandInterestB1_1);
+                                                                 Name commandInterestB1_1=new Name("/NDN-IoT/TrustChange/Board1/ControllerOnly");
+                                                                 SendInterestTaskV2 SITask=new SendInterestTaskV2();
+                                                                 Log.i(TAG, "onMenuItemClick: constructed name is:"+commandInterestB1_1.toString());
+                                                                 SITask.execute(commandInterestB1_1);
+                                                                 //new SendInterestTaskV2(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,commandInterestB1_1);
                                                                  Toast.makeText(MainActivity.this,"Start to change the authority to controller",Toast.LENGTH_LONG).show();
                                                                  break;
                                                              case R.id.authority_all:
-                                                                 Name commandInterestB1_2=new Name(commandInterest);
-                                                                 commandInterestB1_2.append("/Board1/AlLNode");
-                                                                 new SendInterestTask(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,commandInterestB1_2);
+                                                                 Name commandInterestB1_2=new Name("/NDN-IoT/TrustChange/Board1/AllNode");
+                                                                 SendInterestTaskV2 SITask2=new SendInterestTaskV2();
+                                                                 Log.i(TAG, "onMenuItemClick: constructed name is:"+commandInterestB1_2.toString());
+                                                                 SITask2.execute(commandInterestB1_2);
+                                                                 //new SendInterestTaskV2(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,commandInterestB1_1);
                                                                  Toast.makeText(MainActivity.this,"Start to change the authority to all node",Toast.LENGTH_LONG).show();
                                                                  break;
                                                              default:
@@ -592,15 +866,19 @@ public class MainActivity extends AppCompatActivity
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.authority_controller:
-                                Name commandInterestB2_1=new Name(commandInterest);
-                                commandInterestB2_1.append("/Board2/ControllerOnly");
-                                new SendInterestTask(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,commandInterestB2_1);
+                                Name commandInterestB2_1=new Name("/NDN-IoT/TrustChange/Board2/ControllerOnly");
+                                SendInterestTaskV3 SITask=new SendInterestTaskV3();
+                                Log.i(TAG, "onMenuItemClick: constructed name is:"+commandInterestB2_1.toString());
+                                SITask.execute(commandInterestB2_1);
+                                //new SendInterestTaskV2(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,commandInterestB2_1);
                                 Toast.makeText(MainActivity.this,"Start to change the authority to controller",Toast.LENGTH_LONG).show();
                                 break;
                             case R.id.authority_all:
-                                Name commandInterestB1_2=new Name(commandInterest);
-                                commandInterestB1_2.append("/Board2/AlLNode");
-                                new SendInterestTask(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,commandInterestB1_2);
+                                Name commandInterestB2_2=new Name("/NDN-IoT/TrustChange/Board2/AllNode");
+                                SendInterestTaskV3 SITask2=new SendInterestTaskV3();
+                                Log.i(TAG, "onMenuItemClick: constructed name is:"+commandInterestB2_2.toString());
+                                SITask2.execute(commandInterestB2_2);
+                                //new SendInterestTaskV2(MainActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,commandInterestB1_2);
                                 Toast.makeText(MainActivity.this,"Start to change the authority to all node",Toast.LENGTH_LONG).show();
                                 break;
                             default:
@@ -685,10 +963,10 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings&&signOnFlag==1) {
             //start to show pic when receive Interest...
             Log.i(TAG, "Ready to show the pic in the map: ");
-            Intent mainUIUpdateService= new Intent(MainActivity.this,MainUIUpdateService.class);
-            bindService(mainUIUpdateService,uiServiceConnection,BIND_AUTO_CREATE);
+//            Intent mainUIUpdateService= new Intent(MainActivity.this,MainUIUpdateService.class);
+//            bindService(mainUIUpdateService,uiServiceConnection,BIND_AUTO_CREATE);
             new UIUpdateTask().execute();
-            unbindService(uiServiceConnection);
+//            unbindService(uiServiceConnection);
             return true;
         }
 

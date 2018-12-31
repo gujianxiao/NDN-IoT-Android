@@ -6,6 +6,9 @@ public class HARDCODED_EXPERIMENTATION_SIGN_ON_BLE_ECC_256 {
     public static byte[] DEVICE_IDENTIFIER = new byte[] {
         0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
     };
+    public static byte[] DEVICE_IDENTIFIER_2 = new byte[] {
+            0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x02,
+    };
 
     // these are the raw key bytes of the ecc public key (including)
     // the point identifier, which is the first byte
