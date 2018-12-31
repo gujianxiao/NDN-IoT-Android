@@ -35,14 +35,7 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".BLMainActivity"></activity>
 
-        <service
-            android:name=".BLEService"
-            android:enabled="true" />
-        <service
-            android:name=".NFDService"
-            android:enabled="true" />
         <service
             android:name=".MainUIUpdateService"
             android:enabled="true"

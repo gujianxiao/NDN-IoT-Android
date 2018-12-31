@@ -981,8 +981,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             Log.d(TAG, "onNavigationItemSelected: BLIntent Start...");
-            Intent BLIntent=new Intent(MainActivity.this,BLMainActivity.class);
-            startActivity(BLIntent,ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+
             //
         } else if (id == R.id.nav_gallery) {
 
