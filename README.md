@@ -1,7 +1,6 @@
 # NDN-IoT-Android
 This is an applicatione example to show basic function of NDN communication, security sign-on and trust policy switching between the Android phone and development boards using ndn-lite. Specifically, this application consists of two parts: User application in the Android phone and [ndn-lite application](https://github.com/gujianxiao/ndn-lite-application-for-nRF52840-BLE_version/tree/master) in the development board. The user application is a general Android application that provides UI in terms of available devices, basic devices information and turst policy options etc. The ndn-lite application uses ndn-lite so as to provide NDN based communication, security sign-on and trust policy switching functions etc. Currently this application uses BLE as the face to transmit packets between the Android phone and development boards.
 ## Requeriments:
-### Android side:
     Android phone (>=Android 6.0)
     Min SDK version: 23
 ## Get start:
