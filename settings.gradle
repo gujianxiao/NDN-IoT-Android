@@ -1,1 +1,1 @@
-include ':app', ':ndnlitesupport-debug', ':ndnlitesupport'
+include ':app', ':ndnlitesupport-debug'
