@@ -15,20 +15,20 @@ This is an applicatione example to show basic function of NDN communication, sec
 ## License
 
 # ndn-lite-android-support-library
-I. OVERVIEW
+## I. OVERVIEW
 The NDN-Iot-Android library uses the ndn-lite-android-support-library, which is simply meant to provide Android developers with an easier way to develop applications that are compatible with the NDN-Lite library; the goal is to allow intercommunication between Android devices and constrained devices.
 
 The ndn-lite-android-support-library contains two main features; API's for doing NDN over BLE communication, and API's for acting as a controller in the secure sign on protocol. Both of these higher level API's depend on a lower level API for doing basic BLE communication.
 
-a. More Information Regarding the NDN over BLE Support
+### a. More Information Regarding the NDN over BLE Support
 
 The library provides the BLEFace object for doing NDN over BLE communication; this object abstracts away the lower level BLE communication support of the library and provides the user a partially implemented Face (which inherits from the Face object of the jndn library). The example shows how this BLEFace object can be used to send interests and satisfy incoming interests with data.
 
-b. More information Regarding the Sign On Protocol Controller Support
+### b. More information Regarding the Sign On Protocol Controller Support
 
 The API for the secure sign on protocol controller provided uses the BLE API's of the support library to handle the sign on protocol for the user. As shown in the example application, the user only needs to initialize the BLEUnicastConnectionMaintainer and the SignOnBasicControllerBLE, and then add devices that are expected to undergo the sign on protocol through the SignOnBasicControllerBLE.addDevicePendingSignOn function. All things related to transport (e.g. maintaining BLE connections to devices using the ndn-lite library) and the secure sign on protocol (e.g. processing and responding to messages) are handled internally. The user will simply receive a callback when the sign on protocol has been completed for a particular device.
 
-c. More Information Regarding the Basic BLE Communication Support
+### c. More Information Regarding the Basic BLE Communication Support
 
 The main lower level BLE communication functionality offered by the library are scanning for other devices and connecting / communicating with them through BLE unicast connections.
 
@@ -40,10 +40,10 @@ It is assumed that the central device (the phone) and the peripheral device (the
 
 The Android application demonstrates using these functionalities of the lower level BLE communication support of the library: 1) Scanning for devices (optionally filtering by service uuid) 2) Connecting to devices a) Establishing connection b) Discovering services that contain the data transfer characteristic c) Enabling notifications for data transfer characteristics on all services that contain the data transfer characteristic d) Negotiating an MTU of the maximum characteristic value size, 512 3) Exchanging data with devices a) Sending data to a device c) Receiving data from the device through data transfer characteristic notifications
 
-II. INSTALLATION
+## II. INSTALLATION
 ***NOTE: You should clone the repository with the --recursive option; see section b) of installation for why.
 
-a) Using the NDN Lite Android Support library for your Android application
+### a) Using the NDN Lite Android Support library for your Android application
 
 If you would like to use the ndn-lite-android-support-library in your Android application, you can follows these steps (it is assumed that you are using Android Studio):
 
