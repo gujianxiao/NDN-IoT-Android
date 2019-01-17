@@ -25,7 +25,7 @@ This is an applicatione example to show basic function of NDN communication, sec
 9) After pressing Finish, go to File > Project Structure, and go to the Modules section. Click on your main application module, and go to the dependencies tab.
 10) Inside of the dependencies tab, click on the green plus sign on the right hand side of the window, and select to add a "Module dependency".
 11) Select ndnlitesupport from the window that pops up.
-You should now be able to use the library in your Android application.
+You should now be able to use the library in your Android application. For more information of this library, please see [this](https://github.com/peurpdapeurp/ndn-lite-android-support-library)
 ## License
 
 
