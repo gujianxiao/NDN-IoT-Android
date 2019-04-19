@@ -7,12 +7,12 @@
  * directory for more details.
  */
 
-package com.example.chenbo.helloworld;
+package com.example;
 
 public class HARDCODED_EXPERIMENTATION_SIGN_ON_BLE_ECC_256 {
 
     // for the ecc_256 variant of sign on, device identifier is 12 bytes
-    public static byte[] DEVICE_IDENTIFIER = new byte[] {
+    public static byte[] DEVICE_IDENTIFIER_1 = new byte[] {
         0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
     };
     public static byte[] DEVICE_IDENTIFIER_2 = new byte[] {
