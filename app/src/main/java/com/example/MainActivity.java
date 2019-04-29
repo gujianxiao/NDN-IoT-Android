@@ -8,16 +8,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
+import net.named_data.jndn.Data;
 import net.named_data.jndn.Face;
 import net.named_data.jndn.Interest;
 import net.named_data.jndn.InterestFilter;
 import net.named_data.jndn.Name;
+import net.named_data.jndn.OnData;
 import net.named_data.jndn.OnInterestCallback;
 import net.named_data.jndn.security.v2.CertificateV2;
 import net.named_data.jndn.util.Blob;
 
 import NDNLiteSupport.BLEFace.BLEFace;
 import NDNLiteSupport.BLEUnicastConnectionMaintainer.BLEUnicastConnectionMaintainer;
+import NDNLiteSupport.LogHelpers;
 import NDNLiteSupport.NDNLiteSupportInit;
 import NDNLiteSupport.SignOnBasicControllerBLE.SignOnBasicControllerBLE;
 import NDNLiteSupport.SignOnBasicControllerBLE.secureSignOn.SignOnControllerResultCodes;
@@ -81,6 +84,20 @@ public class MainActivity extends AppCompatActivity {
                     // Create a BLE face to the device that onboarding completed successfully for.
                     m_bleFace = new BLEFace(m_SignOnBasicControllerBLE.getMacAddressOfDevice(deviceIdentifierHexString),
                             onInterest);
+
+                    Interest  test_interest = new Interest(new Name("/phone/test/interest"));
+                    test_interest.setChildSelector(-1);
+
+                    LogHelpers.LogByteArrayDebug(TAG, "test_interest_bytes: ", test_interest.wireEncode().getImmutableArray());
+
+                    m_bleFace.expressInterest(test_interest, new OnData() {
+                        @Override
+                        public void onData(Interest interest, Data data) {
+                            logMessage(TAG, "Received data in response to test interest sent to device with device identifier: " +
+                                deviceIdentifierHexString);
+                        }
+                    });
+
                 }
 
                 @Override

@@ -32,8 +32,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'net.named-data:jndn-android:0.18'
     implementation project(':ndn_lite_support_library')
+    implementation 'net.named-data:jndn-android:0.21'
 }
 
 configurations {
